@@ -1,0 +1,25 @@
+{
+  "name": "connect-four-discord",
+  "version": "1.0.0",
+  "description": "A Connect Four game by a discord bot. Made in France with ❤",
+  "main": "src/App.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maxime6678/connect-four-discord.git"
+  },
+  "author": "Maxime6678",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Maxime6678/connect-four-discord/issues"
+  },
+  "homepage": "https://github.com/Maxime6678/connect-four-discord#readme",
+  "dependencies": {
+    "@types/ioredis": "^4.0.6",
+    "@types/node": "^10.12.18",
+    "discord.js": "^11.4.2",
+    "ioredis": "^4.5.1"
+  }
+}
