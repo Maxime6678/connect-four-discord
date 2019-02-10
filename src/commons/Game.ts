@@ -1,4 +1,6 @@
 import { User, TextChannel } from 'discord.js'
+import * as debug from 'debug'
+import { redisInstance, playingGame } from './../App';
 
 /*
  * This project is under MIT License
@@ -15,6 +17,7 @@ export class Game {
 
     public readonly creator: User
     public readonly channel: TextChannel
+    private guid: string
     public players: Map<string, User>
     public board: Board
     public maxPlayers: number = 2
@@ -23,6 +26,11 @@ export class Game {
     public y: number
 
     constructor(creator: User, channel: TextChannel, x: number, y: number) {
+        this.guid = guidGenerator()
+        while (playingGame.get(this.guid)) {
+            this.guid = guidGenerator()
+        }
+
         this.creator = creator
         this.channel = channel
         this.players = new Map<string, User>()
@@ -47,7 +55,7 @@ export class Game {
 
     public play(player: User, x: number, y: number, callback: (err: Error) => void): void {
         let caseInstance = this.board.cases[x][y]
-        if (caseInstance) return callback(new Error('Case not exist!'))
+        if (caseInstance === undefined) return callback(new Error('Case not exist!'))
         if (caseInstance.state) return callback(new Error('Case already used!'))
         caseInstance.changeState(true, player)
         return callback(null)
@@ -69,15 +77,37 @@ export class Game {
         this.resetBoard()
     }
 
+    public changeState(gameState: GameState): void {
+        this.gameState = gameState
+    }
+
+    public getState(): GameState {
+        return this.gameState
+    }
+
     public getURLImage(): string {
-        return `${process.env.API_ENDPOINT}/${process.env.URI_BASE}/getBoard?pos=${encodeURI(JSON.stringify(this.board.getCasesWithPlayer()))}`
+        return `${process.env.API_ENDPOINT}${process.env.URI_BASE}/getBoard?settings=${encodeURI(this.getSetting())}&pos=${encodeURI(this.board.getCasesWithPlayer())}`
+    }
+
+    public getSetting(): string {
+        let users = []
+        this.players.forEach((player) => {
+            users.push({
+                id: player.id
+            })
+        })
+        return JSON.stringify({
+            playerInGame: this.players.size,
+            users: users
+        })
+    }
+
+    public getGuid(): string {
+        return this.guid
     }
 
     private resetBoard(): void {
         this.board = new Board(this.x, this.y)
-    }
-
-    private onSetting(): void {
     }
 
 }
@@ -92,21 +122,21 @@ export class Board {
         for (let i: number = 0; i < x; i++) {
             this.cases[i] = []
             for (let j: number = 0; j < y; j++) {
-                this.cases[i][j] = new Case()
+                this.cases[i][j] = new Case(i, j)
             }
         }
     }
 
-    public getCasesWithPlayer(): any {
-        let results = '{'
+    public getCasesWithPlayer(): string {
+        let result = []
         for (let i: number = 0; i < this.cases.length; i++) {
             for (let j: number = 0; j < this.cases[i].length; j++) {
                 if (this.cases[i][j].state) {
-                    results += JSON.stringify(this.cases[i][j].getInfo())
+                    result.push(this.cases[i][j].getCoordUsed())
                 }
             }
         }
-        return JSON.parse(results + '}')
+        return JSON.stringify(result)
     }
 
 }
@@ -115,10 +145,14 @@ export class Case {
 
     public state: boolean
     public owner: User
+    public readonly x: number
+    public readonly y: number
 
-    constructor() {
+    constructor(x: number, y: number) {
         this.state = false
         this.owner = null
+        this.x = x
+        this.y = y
     }
 
     public changeState(state: boolean, player: User) {
@@ -126,11 +160,24 @@ export class Case {
         this.owner = player
     }
 
-    public getInfo(): any {
+    public getCoordUsed(): any {
         return {
             use: this.state,
-            owner: this.owner
+            user: {
+                id: this.owner.id
+            },
+            pos: {
+                x: this.x,
+                y: this.y
+            }
         }
     }
 
+}
+
+function guidGenerator() {
+    var S4 = function () {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    };
+    return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4() + S4() + S4());
 }

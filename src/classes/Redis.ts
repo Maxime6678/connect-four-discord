@@ -20,6 +20,7 @@ export class RedisInstance extends RedisBuilder {
 
     onReady(client: Redis) {
         console.log(`redis ready!`)
+        this.instance.keys('player:*', (err: Error, res: string[]) => res.forEach(player => this.instance.del(player)))
     }
 
     onError(client: Redis, err: string) {

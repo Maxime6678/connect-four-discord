@@ -1,0 +1,37 @@
+{
+    "gameCreated": "Game successful created !",
+    "gameCreatedDesc": "You can invite your friend by using `.invite @User`",
+    "inviteSend": "User successful invited !",
+    "inviteReceive": "Invitation to play",
+
+    "globalSettings": "Settings",
+    "globalSettingsDesc": "You can edit it by using `.settings <name> <args>`",
+    "globalSettingsDescOther": "Can be change by the creator",
+    "globalCreator": "Creator",
+    "globalPlayers": "Players",
+    "globalGuild": "Guild",
+    "globalChannel": "Channel",
+    "globalBoard": "Board",
+    "globalJoining": "Joining",
+    "globalJoiningText": "**Accept: `.join` \nRefuse: `.refuse`\n ឵឵ ឵឵\nThis invitation expire in 60 seconds and this message will be delete!**",
+    "globalMaxPlayers": "Max players",
+    "globalUser": "User",
+    "globalInviteExpire": "Invite expire",
+    "globalResponse": "Response",
+    "globalWait": "Wait",
+    "globalAccept": "Accept",
+    "globalRefuse": "Refuse",
+    "globalExpire": "Expire",
+    "globalGuid": "GUID: {0}",
+
+    "inviteCommandError": "⚠ Incorrect, use `.invite @user`!",
+
+    "commandCannotSendInDM": "⚠ This command cannot be execute in DM, {0}!",
+    "youAreNotInGame": "⚠ You didn't create a game, so you cannot invite user, {0}!",
+    "youAreNotCreator": "⚠ You aren't the creator of the game, {0}!",
+    "cannotInviteYourself": "⚠ You can not invite yourself, {0}!",
+    "tagUser": "⚠ Please tag an user, {0}!",
+    "maxPlayerReach": "⚠ The player limit is reached, {0}!",
+    "playerAlreadyGame": "⚠ This user is already in game, {0}!",
+    "errorOccurred": "⚠ An error has occurred, please retry later, {0}!"
+}
